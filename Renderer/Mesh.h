@@ -39,16 +39,14 @@ struct MeshFace
 class Mesh
 {
 public:
-	Mesh();
+	Mesh() = default;
 	
 	// Vertices and normals of the mesh
 	std::vector<MeshVertex> vertices;
 	// Faces of the mesh
 	std::vector<MeshFace> faces;
 
-	void setTransformation(const glm::mat4& transformation);
-
-	const glm::mat4& transformation() const;
+	void applyTransformation(const glm::mat4& transformation);
 
 	void setMaterial(std::shared_ptr<Material> material);
 
@@ -82,10 +80,6 @@ public:
 private:
 	// Material of the mesh
 	std::shared_ptr<Material> m_material;
-	// World matrix of the mesh, by default Identity
-	glm::mat4 m_transformation;
-	// Normal matrix of the mesh, by default Identity
-	glm::mat4 m_normalTransformation;
 };
 
 bool loadMesh(const std::string& filename, Mesh& mesh);

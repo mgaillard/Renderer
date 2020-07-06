@@ -15,7 +15,7 @@ private:
 
 	glm::vec3 computeRayColor(const Ray& ray, int depth) const;
 
-	const int m_samplesPerPixels = 32;
+	const int m_samplesPerPixels = 128;
 	const int m_maxDepth = 32;
 	const float m_minT;
 	
@@ -23,4 +23,3 @@ private:
 	
 	std::unique_ptr<Scene> m_scene;
 };
-

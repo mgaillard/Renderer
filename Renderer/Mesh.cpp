@@ -8,21 +8,16 @@
 
 #include "MathUtils.h"
 
-Mesh::Mesh():
-	m_transformation(1.f), // Identity matrix
-	m_normalTransformation(1.f) // Identity matrix
+void Mesh::applyTransformation(const glm::mat4& transformation)
 {
-}
-
-void Mesh::setTransformation(const glm::mat4& transformation)
-{
-	m_transformation = transformation;
-	m_normalTransformation = glm::inverseTranspose(transformation);
-}
-
-const glm::mat4& Mesh::transformation() const
-{
-	return m_transformation;
+	const auto normalTransformation = glm::inverseTranspose(transformation);
+	
+	// Transform all vertices and normals
+	for (unsigned int i = 0; i < vertices.size(); i++)
+	{
+		vertices[i].position = mapPoint(transformation, vertices[i].position);
+		vertices[i].normal = mapVector(normalTransformation, vertices[i].normal);
+	}
 }
 
 void Mesh::setMaterial(std::shared_ptr<Material> material)
@@ -44,7 +39,7 @@ glm::vec3 Mesh::vertex(int face, int v) const
 
 	assert(index >= 0 && index < vertices.size());
 	
-	return mapPoint(m_transformation, vertices[index].position);
+	return vertices[index].position;
 }
 
 glm::vec3 Mesh::normal(int face, int v) const
@@ -57,7 +52,7 @@ glm::vec3 Mesh::normal(int face, int v) const
 	if (index >= 0 && index < vertices.size())
 	{
 		// Normal is defined in the mesh
-		return mapVector(m_normalTransformation, vertices[index].normal);
+		return vertices[index].normal;
 	}
 	else
 	{

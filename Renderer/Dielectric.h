@@ -4,13 +4,13 @@
 
 #include "Material.h"
 
-class Lambertian : public Material
+class Dielectric : public Material
 {
 public:
-	explicit Lambertian(const glm::vec3& albedo);
+	explicit Dielectric(float refractionIndex);
 
 	bool scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scattered) const override;
-	
+
 private:
-	glm::vec3 m_albedo;
+	float m_refractionIndex;
 };

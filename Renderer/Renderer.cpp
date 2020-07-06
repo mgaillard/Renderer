@@ -19,6 +19,7 @@ QImage Renderer::render(int width, int height) const
 	QImage image(width, height, QImage::Format_RGB32);
 
 	int progress = 0;
+	const int totalProgress = height * width;
 
 #pragma omp parallel for
 	for (int i = 0; i < height; i++)
@@ -50,15 +51,14 @@ QImage Renderer::render(int width, int height) const
 			const auto blue = static_cast<uint8_t>(255.0f * clamp(color.z, 0.f, 1.f));
 			// Write the pixel in the image
 			image.setPixel(j, i, qRgb(red, green, blue));
-		}
 
 #pragma omp atomic
-		progress++;
+			progress++;
 
-		// Show progress only on one thread
-		if (omp_get_thread_num() == 0)
-		{
-			qDebug() << "Progress" << 100.f * float(progress) / float(height);
+			if ((progress % 100) == 0)
+			{
+				qDebug() << "Progress:" << float(progress) / float(totalProgress);
+			}
 		}
 	}
 
