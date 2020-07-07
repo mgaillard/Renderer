@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     const auto diffuseGrey = std::make_shared<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f));
     const auto diffuseGreen = std::make_shared<Lambertian>(glm::vec3(0.1f, 0.8f, 0.1f));
     const auto diffuseRed = std::make_shared<Lambertian>(glm::vec3(0.8f, 0.1f, 0.1f));
-    const auto metal = std::make_shared<Metal>(glm::vec3(7.f, 6.f, 5.f), 0.15f);
+    const auto metal = std::make_shared<Metal>(glm::vec3(0.7f, 0.6f, 0.5f), 0.15f);
     const auto glass = std::make_shared<Dielectric>(1.5f);
 	
 	// Load meshes
