@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     const auto diffuseGrey = std::make_shared<Lambertian>(glm::vec3(0.5f, 0.5f, 0.5f));
     const auto diffuseGreen = std::make_shared<Lambertian>(glm::vec3(0.1f, 0.8f, 0.1f));
     const auto diffuseRed = std::make_shared<Lambertian>(glm::vec3(0.8f, 0.1f, 0.1f));
-    const auto metal = std::make_shared<Metal>(glm::vec3(1.f, 1.f, 1.f), 0.25f);
+    const auto metal = std::make_shared<Metal>(glm::vec3(7.f, 6.f, 5.f), 0.15f);
     const auto glass = std::make_shared<Dielectric>(1.5f);
 	
 	// Load meshes
@@ -44,15 +44,15 @@ int main(int argc, char *argv[])
     Mesh sphereDiffuseRed;
     loadMesh("../models/simple_sphere.obj", sphereDiffuseRed);
     auto sphereRedTransformation = glm::scale(glm::vec3(1.5f, 1.5f, 1.5f));
-    sphereRedTransformation = glm::translate(sphereRedTransformation, glm::vec3(1.2f, 1.f, 3.8f));
+    sphereRedTransformation = glm::translate(sphereRedTransformation, glm::vec3(1.f, 1.f, 3.5f));
     sphereDiffuseRed.applyTransformation(sphereRedTransformation);
     sphereDiffuseRed.setMaterial(diffuseRed);
     meshes.push_back(sphereDiffuseRed);
 
     Mesh sphereMetal;
     loadMesh("../models/smooth_sphere.obj", sphereMetal);
-    auto sphereMetalTransformation = glm::scale(glm::vec3(3.f, 3.f, 3.f));
-    sphereMetalTransformation = glm::translate(sphereMetalTransformation, glm::vec3(2.f, 1.0f, 0.f));
+    auto sphereMetalTransformation = glm::scale(glm::vec3(4.f, 4.f, 4.f));
+    sphereMetalTransformation = glm::translate(sphereMetalTransformation, glm::vec3(1.5f, 1.0f, 0.f));
     sphereMetal.applyTransformation(sphereMetalTransformation);
     sphereMetal.setMaterial(metal);
     meshes.push_back(sphereMetal);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
     Mesh cow;
     loadMesh("../models/cow.obj", cow);
-    const auto cowTransformation = glm::translate(glm::vec3(0.f, 3.6f, 4.f));
+    const auto cowTransformation = glm::translate(glm::vec3(-2.f, 3.6f, 6.f));
     cow.applyTransformation(cowTransformation);
     cow.setMaterial(glass);
     meshes.push_back(cow);

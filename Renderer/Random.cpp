@@ -12,6 +12,12 @@ float Random::randomNumber()
 	return distribution(m_randomGenerator);
 }
 
+float Random::randomNumberUnit()
+{
+	std::uniform_real_distribution<float> distribution(0.f, 1.f);
+	return distribution(m_randomGenerator);
+}
+
 glm::vec3 Random::randomOnUnitHemisphere(const glm::vec3& normal)
 {
 	const auto pointOnUnitSphere = glm::sphericalRand(1.f);

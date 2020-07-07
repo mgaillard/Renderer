@@ -16,20 +16,18 @@ Renderer::Renderer(std::unique_ptr<Scene> scene) :
 
 QImage Renderer::render(int width, int height) const
 {
-	QImage image(width, height, QImage::Format_RGB32);
+	// 2D array of colors
+	std::vector<std::vector<glm::vec3>> color(height, std::vector<glm::vec3>(width, {0, 0, 0}));
 
-	int progress = 0;
-	const int totalProgress = height * width;
+	long progress = 0;
+	const long totalProgress = m_samplesPerPixels;
 
 #pragma omp parallel for
-	for (int i = 0; i < height; i++)
+	for (int s = 0; s < m_samplesPerPixels; s++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int i = 0; i < height; i++)
 		{
-			// Output color
-			glm::vec3 color(0.f, 0.f, 0.f);
-
-			for (int s = 0; s < m_samplesPerPixels; s++)
+			for (int j = 0; j < width; j++)
 			{
 				// Compute normalized coordinates, y is reversed in the image
 				const auto x = (float(j) + Random::randomNumber()) / (width - 1);
@@ -39,26 +37,33 @@ QImage Renderer::render(int width, int height) const
 				const auto ray = m_scene->camera()->generateRay(x, y);
 
 				// Add colors for each sample per pixel
-				color += computeRayColor(ray, m_maxDepth);
+				color[i][j] += computeRayColor(ray, m_maxDepth);
 			}
+		}
 
+		// Show progress after each full image
+#pragma omp atomic
+		progress++;
 
+		qDebug() << "Progress:" << float(progress) / float(totalProgress);
+	}
+
+	// Convert to image
+	QImage image(width, height, QImage::Format_RGB32);
+
+#pragma omp parallel for
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
 			// Multi-sampling and Gamma correction, with gamma=2.0
-			color = glm::sqrt(color / float(m_samplesPerPixels));
+			color[i][j] = glm::sqrt(color[i][j] / float(m_samplesPerPixels));
 			// Conversion to RGB in [0; 255]
-			const auto red = static_cast<uint8_t>(255.0f * clamp(color.x, 0.f, 1.f));
-			const auto green = static_cast<uint8_t>(255.0f * clamp(color.y, 0.f, 1.f));
-			const auto blue = static_cast<uint8_t>(255.0f * clamp(color.z, 0.f, 1.f));
+			const auto red = static_cast<uint8_t>(255.0f * clamp(color[i][j].x, 0.f, 1.f));
+			const auto green = static_cast<uint8_t>(255.0f * clamp(color[i][j].y, 0.f, 1.f));
+			const auto blue = static_cast<uint8_t>(255.0f * clamp(color[i][j].z, 0.f, 1.f));
 			// Write the pixel in the image
 			image.setPixel(j, i, qRgb(red, green, blue));
-
-#pragma omp atomic
-			progress++;
-
-			if ((progress % 100) == 0)
-			{
-				qDebug() << "Progress:" << float(progress) / float(totalProgress);
-			}
 		}
 	}
 

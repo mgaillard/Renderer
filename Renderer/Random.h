@@ -21,6 +21,12 @@ public:
 	static float randomNumber();
 
 	/**
+	 * \brief Return a random float number in [0.0; 1.0]
+	 * \return A random float number in [0.0; 1.0]
+	 */
+	static float randomNumberUnit();
+
+	/**
 	 * \brief Generate a random point on a unit hemisphere
 	 * \param normal The direction of the hemisphere
 	 * \return A random point on a unit hemisphere

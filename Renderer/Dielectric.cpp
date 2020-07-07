@@ -1,9 +1,18 @@
 #include "Dielectric.h"
 
+#include "Random.h"
+
 Dielectric::Dielectric(float refractionIndex) :
 	m_refractionIndex(refractionIndex)
 {
 	
+}
+
+double schlick(double cosine, double refractionIndex)
+{
+    auto r0 = (1 - refractionIndex) / (1 + refractionIndex);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
 bool Dielectric::scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scattered) const
@@ -27,6 +36,14 @@ bool Dielectric::scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scat
     const double sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
     if (refractionIndexRatio * sinTheta > 1.0)
+    {
+        const glm::vec3 reflected = glm::reflect(unitDirection, hit.normal);
+        scattered = Ray(hit.point, reflected);
+        return true;
+    }
+
+    const double reflectProb = schlick(cosTheta, refractionIndexRatio);
+    if (Random::randomNumberUnit() < reflectProb)
     {
         const glm::vec3 reflected = glm::reflect(unitDirection, hit.normal);
         scattered = Ray(hit.point, reflected);
