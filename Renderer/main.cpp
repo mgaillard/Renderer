@@ -8,6 +8,49 @@
 #include "Metal.h"
 #include "Scene.h"
 #include "Renderer.h"
+#include "Random.h"
+
+void addRandomSphereWithoutCollisions(std::vector<Mesh>& meshes)
+{
+    // Random position over the floor
+    const glm::vec3 position(
+		Random::randomNumberInterval(-18.f, 18.f),
+        1.f,
+        Random::randomNumberInterval(-18.f, 18.f)
+    );
+
+	// Random color
+    const glm::vec3 color(
+        Random::randomNumberUnit(),
+        Random::randomNumberUnit(),
+        Random::randomNumberUnit()
+    );
+
+    bool discard = false;
+	// Check for collisions
+	for (const auto& mesh : meshes)
+	{
+		for (const auto& v : mesh.vertices)
+		{
+			if (glm::distance(position, v.position) < 1.f)
+			{
+                discard = true;
+			}
+		}
+	}
+	
+	if (!discard)
+	{
+        auto material = std::make_shared<Lambertian>(color);
+
+        Mesh sphere;
+        loadMesh("../models/simple_sphere.obj", sphere);
+        const auto sphereTransformation = glm::translate(position);
+        sphere.applyTransformation(sphereTransformation);
+        sphere.setMaterial(std::move(material));
+        meshes.push_back(sphere);
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +78,7 @@ int main(int argc, char *argv[])
 
     Mesh floor;
     loadMesh("../models/floor.obj", floor);
-    auto floorTransformation = glm::scale(glm::vec3(25.f, 1.f, 25.f));
+    auto floorTransformation = glm::scale(glm::vec3(40.f, 1.f, 40.f));
     floorTransformation = glm::translate(floorTransformation, glm::vec3(-0.5f, 0.f, -0.5f));
     floor.applyTransformation(floorTransformation);
     floor.setMaterial(diffuseGrey);
@@ -71,6 +114,11 @@ int main(int argc, char *argv[])
     cow.applyTransformation(cowTransformation);
     cow.setMaterial(glass);
     meshes.push_back(cow);
+
+	for (int i = 0; i < 50; i++)
+	{
+        addRandomSphereWithoutCollisions(meshes);
+	}
 
 	// Setup scene
     auto scene = std::make_unique<Scene>(std::move(camera), std::move(meshes));

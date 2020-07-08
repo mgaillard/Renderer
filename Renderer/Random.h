@@ -27,6 +27,14 @@ public:
 	static float randomNumberUnit();
 
 	/**
+	 * \brief Generate a random float number in an interval
+	 * \param a Minimum value
+	 * \param b Maximum value
+	 * \return The random float number in the interval [a; b]
+	 */
+	static float randomNumberInterval(float a, float b);
+
+	/**
 	 * \brief Generate a random point on a unit hemisphere
 	 * \param normal The direction of the hemisphere
 	 * \return A random point on a unit hemisphere

@@ -8,13 +8,17 @@ std::mt19937 Random::m_randomGenerator = std::mt19937();
 
 float Random::randomNumber()
 {
-	std::uniform_real_distribution<float> distribution(-0.5f, 0.5f);
-	return distribution(m_randomGenerator);
+	return randomNumberInterval(-0.5f, 0.5f);
 }
 
 float Random::randomNumberUnit()
 {
-	std::uniform_real_distribution<float> distribution(0.f, 1.f);
+	return randomNumberInterval(0.f, 1.f);
+}
+
+float Random::randomNumberInterval(float a, float b)
+{
+	std::uniform_real_distribution<float> distribution(a, b);
 	return distribution(m_randomGenerator);
 }
 
