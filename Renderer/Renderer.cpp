@@ -4,6 +4,7 @@
 
 #include <QtDebug>
 
+#include "FloatImage.h"
 #include "Random.h"
 #include "MathUtils.h"
 
@@ -14,10 +15,10 @@ Renderer::Renderer(std::unique_ptr<Scene> scene) :
 	
 }
 
-QImage Renderer::render(int width, int height) const
-{
-	// 2D array of colors
-	std::vector<std::vector<glm::vec3>> color(height, std::vector<glm::vec3>(width, {0, 0, 0}));
+FloatImage Renderer::render(int width, int height) const
+{	
+	// 2D array of colors for each thread on the computer
+	std::vector<FloatImage> floatImages(omp_get_max_threads(), FloatImage(width, height));
 
 	long progress = 0;
 	const long totalProgress = m_samplesPerPixels;
@@ -37,7 +38,10 @@ QImage Renderer::render(int width, int height) const
 				const auto ray = m_scene->camera()->generateRay(x, y);
 
 				// Add colors for each sample per pixel
-				color[i][j] += computeRayColor(ray, m_maxDepth);
+				const auto rayColor = computeRayColor(ray, m_maxDepth);
+
+				const auto currentThread = omp_get_thread_num();
+				floatImages[currentThread].at(i, j) += rayColor;
 			}
 		}
 
@@ -48,26 +52,14 @@ QImage Renderer::render(int width, int height) const
 		qDebug() << "Progress:" << float(progress) / float(totalProgress);
 	}
 
-	// Convert to image
-	QImage image(width, height, QImage::Format_RGB32);
+	// Aggregate the images from each CPU core
+	auto floatImage = FloatImage::aggregateImages(floatImages);
 
-#pragma omp parallel for
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			// Multi-sampling and Gamma correction, with gamma=2.0
-			color[i][j] = glm::sqrt(color[i][j] / float(m_samplesPerPixels));
-			// Conversion to RGB in [0; 255]
-			const auto red = static_cast<uint8_t>(255.0f * clamp(color[i][j].x, 0.f, 1.f));
-			const auto green = static_cast<uint8_t>(255.0f * clamp(color[i][j].y, 0.f, 1.f));
-			const auto blue = static_cast<uint8_t>(255.0f * clamp(color[i][j].z, 0.f, 1.f));
-			// Write the pixel in the image
-			image.setPixel(j, i, qRgb(red, green, blue));
-		}
-	}
+	// Multi-sampling and Gamma correction, with gamma=2.0
+	floatImage /= float(m_samplesPerPixels);
+	floatImage.applyGammaCorrection();
 
-	return image;
+	return floatImage;
 }
 
 glm::vec3 Renderer::computeRayColor(const Ray& ray, int depth) const

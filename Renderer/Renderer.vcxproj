@@ -97,6 +97,8 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Dielectric.cpp" />
+    <ClCompile Include="FloatImage.cpp" />
+    <ClCompile Include="ImageConversion.cpp" />
     <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtils.cpp" />
@@ -109,6 +111,8 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Dielectric.h" />
+    <ClInclude Include="FloatImage.h" />
+    <ClInclude Include="ImageConversion.h" />
     <ClInclude Include="Lambertian.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathUtils.h" />

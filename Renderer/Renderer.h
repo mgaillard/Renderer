@@ -3,13 +3,14 @@
 #include <random>
 
 #include "Scene.h"
+#include "FloatImage.h"
 
 class Renderer
 {
 public:
 	explicit Renderer(std::unique_ptr<Scene> scene);
 
-	QImage render(int width, int height) const;
+	FloatImage render(int width, int height) const;
 
 private:
 

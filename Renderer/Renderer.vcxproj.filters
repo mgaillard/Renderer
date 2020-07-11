@@ -50,6 +50,12 @@
     <ClCompile Include="Dielectric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FloatImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageConversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -83,6 +89,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dielectric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageConversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

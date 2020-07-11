@@ -4,6 +4,7 @@
 
 
 #include "Dielectric.h"
+#include "ImageConversion.h"
 #include "Lambertian.h"
 #include "Metal.h"
 #include "Scene.h"
@@ -124,7 +125,8 @@ int main(int argc, char *argv[])
     auto scene = std::make_unique<Scene>(std::move(camera), std::move(meshes));
 
     const Renderer renderer(std::move(scene));
-    const auto image = renderer.render(width, height);
+    const auto floatImage = renderer.render(width, height);
+    const auto image = convertToQImage(floatImage);
     image.save("output.png");
 
     return 0;
