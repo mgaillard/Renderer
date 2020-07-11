@@ -1,7 +1,4 @@
-#include <QtCore/QCoreApplication>
-
 #include <glm/gtx/transform.hpp>
-
 
 #include "Dielectric.h"
 #include "ImageConversion.h"
@@ -126,8 +123,7 @@ int main(int argc, char *argv[])
 
     const Renderer renderer(std::move(scene));
     const auto floatImage = renderer.render(width, height);
-    const auto image = convertToQImage(floatImage);
-    image.save("output.png");
+    saveAsPPM(floatImage, "output.ppm");
 
     return 0;
 }

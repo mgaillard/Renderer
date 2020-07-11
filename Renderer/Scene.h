@@ -3,8 +3,6 @@
 #include <memory>
 #include <vector>
 
-#include <QImage>
-
 #include "Camera.h"
 #include "Mesh.h"
 

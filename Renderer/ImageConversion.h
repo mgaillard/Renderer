@@ -1,7 +1,12 @@
 #pragma once
 
-#include <QImage>
+#include <string>
 
 #include "FloatImage.h"
 
-QImage convertToQImage(const FloatImage& image);
+#ifdef QT_AVAILABLE
+#include <QImage>
+bool saveAsPNG(const FloatImage& image, const std::string& filename);
+#endif
+
+bool saveAsPPM(const FloatImage& image, const std::string& filename);
