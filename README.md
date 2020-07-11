@@ -6,7 +6,15 @@ My own implementation of [Ray Tracing in One Weekend](https://raytracing.github.
 * Uses glm for 3D math
 
 ## Prerequisites
-- Qt 5.12.7
+- Qt 5.12.7 (optional for PNG support)
+
+## Build on Linux
+```bash
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
+$ make
+```
 
 ## Author
 Mathieu Gaillard

@@ -2,7 +2,7 @@
 
 #include <omp.h>
 
-#include <QtDebug>
+#include <iostream>
 
 #include "FloatImage.h"
 #include "Random.h"
@@ -49,7 +49,7 @@ FloatImage Renderer::render(int width, int height) const
 #pragma omp atomic
 		progress++;
 
-		qDebug() << "Progress:" << float(progress) / float(totalProgress);
+		std::cout << "Progress: " << float(progress) / float(totalProgress) << std::endl;
 	}
 
 	// Aggregate the images from each CPU core
