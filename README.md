@@ -1,5 +1,7 @@
 # Renderer
-My own implementation of [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html). 
+My own implementation of [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
+
+![Screenshot](screenshots/scene_spheres_cow.png "Screenshot of the Ray Tracer")
 
 ## Differences with the original tutorial
 * Works on triangle meshes instead of only spheres
