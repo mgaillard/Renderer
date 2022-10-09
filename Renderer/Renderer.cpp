@@ -3,6 +3,7 @@
 #include <omp.h>
 
 #include <iostream>
+#include <sstream>
 
 #include "FloatImage.h"
 #include "Random.h"
@@ -49,7 +50,10 @@ FloatImage Renderer::render(int width, int height) const
 #pragma omp atomic
 		progress++;
 
-		std::cout << "Progress: " << float(progress) / float(totalProgress) << std::endl;
+		// Use string stream to prevent some of the concurrency issues when displaying
+		std::stringstream progressStream;
+		progressStream << "Progress: " << static_cast<float>(progress) / static_cast<float>(totalProgress) << std::endl;
+		std::cout << progressStream.str();
 	}
 
 	// Aggregate the images from each CPU core
