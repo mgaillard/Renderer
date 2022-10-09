@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
+#include "AABB.h"
 #include "Ray.h"
 #include "Material.h"
 
@@ -39,18 +40,25 @@ struct MeshFace
 class Mesh
 {
 public:
-	Mesh() = default;
-	
-	// Vertices and normals of the mesh
-	std::vector<MeshVertex> vertices;
-	// Faces of the mesh
-	std::vector<MeshFace> faces;
+	Mesh();
 
-	void applyTransformation(const glm::mat4& transformation);
+	explicit Mesh(std::vector<MeshVertex> vertices, std::vector<MeshFace> faces);
+
+	void setVertices(std::vector<MeshVertex> vertices);
+
+	void setFaces(std::vector<MeshFace> faces);
 
 	void setMaterial(std::shared_ptr<Material> material);
 
+	void applyTransformation(const glm::mat4& transformation);
+
+	const std::vector<MeshVertex>& vertices() const;
+
+	const std::vector<MeshFace>& faces() const;
+
 	const std::shared_ptr<Material>& material() const;
+
+	const AABB& boundingBox() const;
 
 	/**
 	 * \brief Return the transformed vertex v (between 0 and 2) from a face
@@ -78,7 +86,30 @@ public:
 	glm::vec3 normal(int face, float u, float v) const;
 
 private:
-	// Material of the mesh
+	/**
+	 * \brief Update the internal AABB of the mesh.
+	 *        Warning: run this when the mesh is updated.
+	 */
+	void updateBoundingBox();
+	
+	/**
+	 * \brief Vertices and normals of the mesh
+	 */
+	std::vector<MeshVertex> m_vertices;
+	
+	/**
+	 * \brief Faces of the mesh
+	 */
+	std::vector<MeshFace> m_faces;
+
+	/**
+	 * \brief Bounding box of the mesh for ray intersection acceleration
+	 */
+	AABB m_boundingBox;
+	
+	/**
+	 * \brief Material of the mesh
+	 */
 	std::shared_ptr<Material> m_material;
 };
 

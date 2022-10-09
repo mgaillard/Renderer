@@ -35,7 +35,7 @@ public:
 		return m_direction;
 	}
 
-	glm::vec3 at(float t) const
+	[[nodiscard]] glm::vec3 at(float t) const
 	{
 		return m_origin + m_direction * t;
 	}

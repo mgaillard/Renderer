@@ -1,5 +1,8 @@
 #include <glm/gtx/transform.hpp>
 
+#include <chrono>
+#include <iostream>
+
 #include "Dielectric.h"
 #include "ImageConversion.h"
 #include "Lambertian.h"
@@ -28,7 +31,7 @@ void addRandomSphereWithoutCollisions(std::vector<Mesh>& meshes)
 	// Check for collisions
 	for (const auto& mesh : meshes)
 	{
-		for (const auto& v : mesh.vertices)
+		for (const auto& v : mesh.vertices())
 		{
 			if (glm::distance(position, v.position) < 1.f)
 			{
@@ -122,7 +125,11 @@ int main(int argc, char *argv[])
     auto scene = std::make_unique<Scene>(std::move(camera), std::move(meshes));
 
     const Renderer renderer(std::move(scene));
+    const auto start = std::chrono::system_clock::now();
     const auto floatImage = renderer.render(width, height);
+    const auto end = std::chrono::system_clock::now();
+    const auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "Rendering time: " << elapsedTime << " ms\n";
     saveAsPPM(floatImage, "output.ppm");
 
     return 0;

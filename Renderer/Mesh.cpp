@@ -8,16 +8,45 @@
 
 #include "MathUtils.h"
 
+Mesh::Mesh() :
+	m_boundingBox({0.f, 0.f, 0.f}, { 0.f, 0.f, 0.f }),
+	m_material(nullptr)
+{
+}
+
+Mesh::Mesh(std::vector<MeshVertex> vertices, std::vector<MeshFace> faces) :
+	m_vertices(std::move(vertices)),
+	m_faces(std::move(faces)),
+	m_boundingBox({ 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }),
+	m_material(nullptr)
+{
+	updateBoundingBox();
+}
+
+void Mesh::setVertices(std::vector<MeshVertex> vertices)
+{
+	m_vertices = std::move(vertices);
+
+	updateBoundingBox();
+}
+
+void Mesh::setFaces(std::vector<MeshFace> faces)
+{
+	m_faces = std::move(faces);
+}
+
 void Mesh::applyTransformation(const glm::mat4& transformation)
 {
 	const auto normalTransformation = glm::inverseTranspose(transformation);
 	
 	// Transform all vertices and normals
-	for (unsigned int i = 0; i < vertices.size(); i++)
+	for (unsigned int i = 0; i < m_vertices.size(); i++)
 	{
-		vertices[i].position = mapPoint(transformation, vertices[i].position);
-		vertices[i].normal = mapVector(normalTransformation, vertices[i].normal);
+		m_vertices[i].position = mapPoint(transformation, m_vertices[i].position);
+		m_vertices[i].normal = mapVector(normalTransformation, m_vertices[i].normal);
 	}
+
+	updateBoundingBox();
 }
 
 void Mesh::setMaterial(std::shared_ptr<Material> material)
@@ -25,9 +54,24 @@ void Mesh::setMaterial(std::shared_ptr<Material> material)
 	m_material = std::move(material);
 }
 
+const std::vector<MeshVertex>& Mesh::vertices() const
+{
+	return m_vertices;
+}
+
+const std::vector<MeshFace>& Mesh::faces() const
+{
+	return m_faces;
+}
+
 const std::shared_ptr<Material>& Mesh::material() const
 {
 	return m_material;
+}
+
+const AABB& Mesh::boundingBox() const
+{
+	return m_boundingBox;
 }
 
 glm::vec3 Mesh::vertex(int face, int v) const
@@ -35,11 +79,11 @@ glm::vec3 Mesh::vertex(int face, int v) const
 	assert(face >= 0 && face < faces.size());
 	assert(v >= 0 && v < 3);
 
-	const auto index = faces[face].vertices[v];
+	const auto index = m_faces[face].vertices[v];
 
 	assert(index >= 0 && index < vertices.size());
 	
-	return vertices[index].position;
+	return m_vertices[index].position;
 }
 
 glm::vec3 Mesh::normal(int face, int v) const
@@ -47,12 +91,12 @@ glm::vec3 Mesh::normal(int face, int v) const
 	assert(face >= 0 && face < faces.size());
 	assert(v >= 0 && v < 3);
 
-	const auto index = faces[face].normals[v];
+	const auto index = m_faces[face].normals[v];
 
-	if (index >= 0 && index < vertices.size())
+	if (index >= 0 && index < m_vertices.size())
 	{
 		// Normal is defined in the mesh
-		return vertices[index].normal;
+		return m_vertices[index].normal;
 	}
 	else
 	{
@@ -76,13 +120,30 @@ glm::vec3 Mesh::normal(int face, float u, float v) const
 	return glm::normalize(normalVector);
 }
 
+void Mesh::updateBoundingBox()
+{
+	if (!m_vertices.empty())
+	{
+		glm::vec3 a = m_vertices.front().position;
+		glm::vec3 b = m_vertices.front().position;
+
+		for (const auto& v : m_vertices)
+		{
+			a = glm::min(a, v.position);
+			b = glm::max(b, v.position);
+		}
+
+		m_boundingBox = AABB(a, b);
+	}
+}
+
 int indexOfNumberLetter(std::string& str, int offset)
 {
 	for (int i = offset; i < str.length(); ++i)
 	{
 		if ((str[i] >= '0' && str[i] <= '9') || str[i] == '-' || str[i] == '.') return i;
 	}
-	return str.length();
+	return static_cast<int>(str.length());
 }
 
 int lastIndexOfNumberLetter(std::string& str)
@@ -110,7 +171,15 @@ std::vector<std::string> split(const std::string& s, char delim)
 
 bool loadMesh(const std::string& filename, Mesh& mesh)
 {
-	return loadMesh(filename, mesh.vertices, mesh.faces);
+	std::vector<MeshVertex> vertices;
+	std::vector<MeshFace> faces;
+
+	const auto success = loadMesh(filename, vertices, faces);
+
+	mesh.setVertices(vertices);
+	mesh.setFaces(faces);
+
+	return success;
 }
 
 bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, std::vector<MeshFace>& faces)
@@ -235,6 +304,12 @@ bool rayMeshIntersection(
 	float minT,
 	HitRecord& hit)
 {
+	// First intersect ray with AABB to quickly discard non-intersecting rays
+	if (!rayAABBIntersection(mesh.boundingBox(), ray))
+	{
+		return false;
+	}
+
 	const auto& orig = ray.origin();
 	const auto& dir = ray.direction();
 	
@@ -244,7 +319,7 @@ bool rayMeshIntersection(
 	hit.t = std::numeric_limits<float>::max();
 
 	// Iterate over all triangles in the mesh
-	for (int f = 0; f < mesh.faces.size(); f++)
+	for (int f = 0; f < mesh.faces().size(); f++)
 	{
 		const auto& v0 = mesh.vertex(f, 0);
 		const auto& v1 = mesh.vertex(f, 1);

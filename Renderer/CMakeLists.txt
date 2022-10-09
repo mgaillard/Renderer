@@ -14,6 +14,7 @@ else()
 endif()
 
 set(HEADER_FILES
+        AABB.h
         Camera.h
         Dielectric.h
         FloatImage.h
@@ -31,6 +32,7 @@ set(HEADER_FILES
 
 set(SRC_FILES
         main.cpp
+        AABB.cpp
         Camera.cpp
         Dielectric.cpp
         FloatImage.cpp
