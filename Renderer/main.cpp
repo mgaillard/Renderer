@@ -55,16 +55,16 @@ void addRandomSphereWithoutCollisions(std::vector<Mesh>& meshes)
 
 int main(int argc, char *argv[])
 {
-    const int width = 1280;
-    const int height = 720;
+    constexpr int width = 1280;
+    constexpr int height = 720;
 
 	// Setup camera
-    const glm::vec3 eye(0, 10, 25);
-    const glm::vec3 at(0, 0, 0);
-    const glm::vec3 right(1, 0, 0);
+    constexpr glm::vec3 eye(0, 10, 25);
+    constexpr glm::vec3 at(0, 0, 0);
+    constexpr glm::vec3 right(1, 0, 0);
     const glm::vec3 up = glm::normalize(glm::cross(right, at - eye));
-    const float focalLength = 1.0f;
-    const float aspectRatio = float(width) / float(height);
+    constexpr float focalLength = 2.0f;
+    constexpr float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
     auto camera = std::make_unique<Camera>(eye, at, up, focalLength, aspectRatio);
 
 	// Setup the available materials

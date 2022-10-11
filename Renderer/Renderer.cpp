@@ -32,8 +32,8 @@ FloatImage Renderer::render(int width, int height) const
 			for (int j = 0; j < width; j++)
 			{
 				// Compute normalized coordinates, y is reversed in the image
-				const auto x = (float(j) + Random::randomNumber()) / (width - 1);
-				const auto y = (float(height - 1 - i) + Random::randomNumber()) / (height - 1);
+				const auto x = (static_cast<float>(j) + Random::randomNumber()) / (width - 1);
+				const auto y = (static_cast<float>(height - 1 - i) + Random::randomNumber()) / (height - 1);
 
 				// Generate a ray from the camera
 				const auto ray = m_scene->camera()->generateRay(x, y);
@@ -60,7 +60,7 @@ FloatImage Renderer::render(int width, int height) const
 	auto floatImage = FloatImage::aggregateImages(floatImages);
 
 	// Multi-sampling and Gamma correction, with gamma=2.0
-	floatImage /= float(m_samplesPerPixels);
+	floatImage /= static_cast<float>(m_samplesPerPixels);
 	floatImage.applyGammaCorrection();
 
 	return floatImage;
