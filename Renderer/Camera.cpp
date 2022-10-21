@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up, float focalLength, float aspectRatio) :
+Camera::Camera(const Vec3& eye, const Vec3& at, const Vec3& up, double focalLength, double aspectRatio) :
 	m_eye(eye),
 	m_at(at),
 	m_up(glm::normalize(up)),
@@ -15,7 +15,7 @@ Camera::Camera(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up, f
 	updateCameraInternalVectors();
 }
 
-Ray Camera::generateRay(float x, float y) const
+Ray Camera::generateRay(double x, double y) const
 {
 	const auto direction = m_lowerLeftCorner + x * m_horizontal + y * m_vertical - m_eye;
 
@@ -24,8 +24,8 @@ Ray Camera::generateRay(float x, float y) const
 
 void Camera::updateCameraInternalVectors()
 {
-	constexpr float viewportHeight = 2.f;
-	const float viewportWidth = m_aspectRatio * viewportHeight;
+	constexpr double viewportHeight = 2.0;
+	const double viewportWidth = m_aspectRatio * viewportHeight;
 
 	const auto eyeToAt = glm::normalize(m_at - m_eye);
 
@@ -33,7 +33,7 @@ void Camera::updateCameraInternalVectors()
 	m_vertical = viewportHeight * m_up;
 	
 	m_lowerLeftCorner = m_eye
-	                    - m_horizontal / 2.f
-	                    - m_vertical / 2.f
+	                    - m_horizontal / 2.0
+	                    - m_vertical / 2.0
 	                    + m_focalLength * eyeToAt;
 }

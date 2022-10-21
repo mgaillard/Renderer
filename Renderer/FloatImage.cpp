@@ -5,13 +5,13 @@
 FloatImage::FloatImage(int width, int height) :
 	m_width(width),
 	m_height(height),
-	m_data(m_width * m_height, { 0.f, 0.f, 0.f })
+	m_data(m_width * m_height, { 0.0, 0.0, 0.0 })
 {
 	assert(width > 0);
 	assert(height > 0);
 }
 
-void FloatImage::atomicAdd(int row, int col, const glm::vec3& color)
+void FloatImage::atomicAdd(int row, int col, const Vec3& color)
 {
 	auto& pixel = at(row, col);
 #pragma omp atomic
@@ -22,7 +22,7 @@ void FloatImage::atomicAdd(int row, int col, const glm::vec3& color)
 	pixel.z += color.z;
 }
 
-FloatImage& FloatImage::operator/=(float divisor)
+FloatImage& FloatImage::operator/=(double divisor)
 {
 	for (unsigned int i = 0; i < m_data.size(); i++)
 	{

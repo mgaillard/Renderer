@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-AABB::AABB(const glm::vec3& a, const glm::vec3& b) :
+AABB::AABB(const Vec3& a, const Vec3& b) :
     m_start(std::min(a.x, b.x),
             std::min(a.y, b.y),
             std::min(a.z, b.z)),
@@ -18,10 +18,10 @@ bool rayAABBIntersection(const AABB& box, const Ray& ray)
     // Source: https://www.scratchapixel.com
     //         A Minimal Ray-Tracer: Rendering Simple Shapes (Sphere, Cube, Disk, Plane, etc.)
 
-    const auto invDirection = 1.f / ray.direction();
-    float txmin, txmax, tymin, tymax, tzmin, tzmax;
+    const auto invDirection = ray.inverseDirection();
+    double txmin, txmax, tymin, tymax, tzmin, tzmax;
 
-    if (invDirection.x >= 0.f)
+    if (invDirection.x >= 0.0)
     {
         txmin = (box.minX() - ray.origin().x) * invDirection.x;
         txmax = (box.maxX() - ray.origin().x) * invDirection.x;
@@ -31,7 +31,7 @@ bool rayAABBIntersection(const AABB& box, const Ray& ray)
         txmax = (box.minX() - ray.origin().x) * invDirection.x;
     }
 
-    if (invDirection.y >= 0.f)
+    if (invDirection.y >= 0.0)
     {
         tymin = (box.minY() - ray.origin().y) * invDirection.y;
         tymax = (box.maxY() - ray.origin().y) * invDirection.y;
@@ -50,7 +50,7 @@ bool rayAABBIntersection(const AABB& box, const Ray& ray)
     if (tymax < txmax)
         txmax = tymax;
     
-    if (invDirection.z >= 0.f)
+    if (invDirection.z >= 0.0)
     {
         tzmin = (box.minZ() - ray.origin().z) * invDirection.z;
         tzmax = (box.maxZ() - ray.origin().z) * invDirection.z;

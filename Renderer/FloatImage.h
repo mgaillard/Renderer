@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <glm/glm.hpp>
+#include "Types.h"
 
 class FloatImage
 {
@@ -12,7 +12,7 @@ public:
 	int width() const { return m_width; }
 	int height() const { return m_height; }
 
-	glm::vec3& at(int row, int col)
+	Vec3& at(int row, int col)
 	{
 		assert(row >= 0 && row < m_height);
 		assert(col >= 0 && col < m_width);
@@ -20,7 +20,7 @@ public:
 		return m_data[row * m_width + col];
 	}
 	
-	const glm::vec3& at(int row, int col) const
+	const Vec3& at(int row, int col) const
 	{
 		assert(row >= 0 && row < m_height);
 		assert(col >= 0 && col < m_width);
@@ -28,15 +28,14 @@ public:
 		return m_data[row * m_width + col];
 	}
 
-	void atomicAdd(int row, int col, const glm::vec3& color);
+	void atomicAdd(int row, int col, const Vec3& color);
 
 	/**
 	 * \brief Divide all pixels in the image by a float number.
 	 *        Useful when using multi-sampling.
 	 * \param divisor The divisor
-	 * \return 
 	 */
-	FloatImage& operator/=(float divisor);
+	FloatImage& operator/=(double divisor);
 
 	/**
 	 * \brief Apply gamma correction on the image, with gamma = 2.0
@@ -55,6 +54,6 @@ private:
 	int m_width;
 	int m_height;
 	
-	std::vector<glm::vec3> m_data;
+	std::vector<Vec3> m_data;
 };
 

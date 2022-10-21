@@ -13,10 +13,10 @@
 
 struct MeshVertex
 {
-	glm::vec3 position;
-	glm::vec3 normal;
+	Vec3 position;
+	Vec3 normal;
 
-	MeshVertex(const glm::vec3& position, const glm::vec3& normal) :
+	MeshVertex(const Vec3& position, const Vec3& normal) :
 		position(position),
 		normal(normal)
 	{
@@ -50,7 +50,11 @@ public:
 
 	void setMaterial(std::shared_ptr<Material> material);
 
-	void applyTransformation(const glm::mat4& transformation);
+	void applyTransformation(const Mat4& transformation);
+
+	int nbVertices() const;
+
+	int nbFaces() const;
 
 	const std::vector<MeshVertex>& vertices() const;
 
@@ -66,7 +70,7 @@ public:
 	 * \param v The index of the vertex in the face
 	 * \return The 3D coordinates of the vertex
 	 */
-	glm::vec3 vertex(int face, int v) const;
+	[[nodiscard]] Vec3 vertex(int face, int v) const;
 
 	/**
 	 * \brief Return the transformed normal at a vertex v (between 0 and 2) from a face
@@ -74,7 +78,7 @@ public:
 	 * \param v The index of the vertex in the face
 	 * \return The 3D coordinates of the normal
 	 */
-	glm::vec3 normal(int face, int v) const;
+	[[nodiscard]] Vec3 normal(int face, int v) const;
 
 	/**
 	 * \brief Return the transformed normal interpolated with barycentric coordinates from a face
@@ -83,7 +87,7 @@ public:
 	 * \param v The second barycentric coordinate
 	 * \return The 3D coordinates of the normal
 	 */
-	glm::vec3 normal(int face, float u, float v) const;
+	[[nodiscard]] Vec3 normal(int face, double u, double v) const;
 
 private:
 	/**
@@ -118,10 +122,10 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 
 bool rayMeshIntersection(const Mesh& mesh,
 	                     const Ray& ray,
-						 float minT,
+						 double minT,
 	                     HitRecord& hit);
 
 bool rayMeshesIntersection(const std::vector<Mesh>& meshes,
 	                       const Ray& ray,
-						   float minT,
+						   double minT,
 	                       HitRecord& hit);

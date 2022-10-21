@@ -1,25 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-template<typename T>
-const T& clamp(const T& v, const T& lo, const T& hi)
-{
-	assert(lo <= hi);
-
-	if (v < lo)
-	{
-		return lo;
-	}
-	else if (v > hi)
-	{
-		return hi;
-	}
-	else
-	{
-		return v;
-	}
-}
+#include "Types.h"
 
 template<typename T>
 T lerp(const T& a, const T& b, const T& x)
@@ -35,7 +16,7 @@ T lerp(const T& a, const T& b, const T& x)
  * \param point A 3D point
  * \return The transformed 3D point
  */
-glm::vec3 mapPoint(const glm::mat4& transformation, const glm::vec3& point);
+Vec3 mapPoint(const Mat4& transformation, const Vec3& point);
 
 /**
  * \brief Map a 3D vector with a transformation.
@@ -44,4 +25,4 @@ glm::vec3 mapPoint(const glm::mat4& transformation, const glm::vec3& point);
  * \param vector A 3D vector
  * \return The transformed 3D vector
  */
-glm::vec3 mapVector(const glm::mat4& transformation, const glm::vec3& vector);
+Vec3 mapVector(const Mat4& transformation, const Vec3& vector);

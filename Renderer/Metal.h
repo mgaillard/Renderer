@@ -1,19 +1,18 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "Material.h"
+#include "Types.h"
 
 class Metal : public Material
 {
 public:
-	explicit Metal(const glm::vec3& albedo, float fuzz);
+	explicit Metal(const Vec3& albedo, double fuzz);
 
-	bool scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scattered) const override;
+	bool scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered) const override;
 
 private:
-	glm::vec3 m_albedo;
+	Vec3 m_albedo;
 
-	float m_fuzz;
+	double m_fuzz;
 };
 

@@ -1,5 +1,6 @@
 #include "ImageConversion.h"
 
+#include <algorithm>
 #include <fstream>
 
 #include "MathUtils.h"
@@ -16,9 +17,9 @@ bool saveAsPNG(const FloatImage& image, const std::string& filename)
 		for (int j = 0; j < image.width(); j++)
 		{
 			// Conversion to RGB in [0; 255]
-			const auto red = static_cast<uint8_t>(255.0f * clamp(image.at(i, j).x, 0.f, 1.f));
-			const auto green = static_cast<uint8_t>(255.0f * clamp(image.at(i, j).y, 0.f, 1.f));
-			const auto blue = static_cast<uint8_t>(255.0f * clamp(image.at(i, j).z, 0.f, 1.f));
+			const auto red = static_cast<uint8_t>(255.0 * std::clamp(image.at(i, j).x, 0.0, 1.0));
+			const auto green = static_cast<uint8_t>(255.0 * std::clamp(image.at(i, j).y, 0.0, 1.0));
+			const auto blue = static_cast<uint8_t>(255.0 * std::clamp(image.at(i, j).z, 0.0, 1.0));
 			// Write the pixel in the image
 			outputImage.setPixel(j, i, qRgb(red, green, blue));
 		}
@@ -44,9 +45,9 @@ bool saveAsPPM(const FloatImage& image, const std::string& filename)
 		for (int j = 0; j < image.width(); j++)
 		{
 			// Conversion to RGB in [0; 255]
-			const auto red = int(255.0f * clamp(image.at(i, j).x, 0.f, 1.f));
-			const auto green = int(255.0f * clamp(image.at(i, j).y, 0.f, 1.f));
-			const auto blue = int(255.0f * clamp(image.at(i, j).z, 0.f, 1.f));
+			const auto red = static_cast<int>(255.0 * std::clamp(image.at(i, j).x, 0.0, 1.0));
+			const auto green = static_cast<int>(255.0 * std::clamp(image.at(i, j).y, 0.0, 1.0));
+			const auto blue = static_cast<int>(255.0 * std::clamp(image.at(i, j).z, 0.0, 1.0));
 
 			file << red << ' ' << green << ' ' << blue << '\n';
 		}

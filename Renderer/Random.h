@@ -2,7 +2,7 @@
 
 #include <random>
 
-#include <glm/glm.hpp>
+#include "Types.h"
 
 class Random
 {
@@ -18,13 +18,13 @@ public:
 	 * \brief Return a random float number in [-0.5; 0.5]
 	 * \return A random float number in [-0.5; 0.5]
 	 */
-	static float randomNumber();
+	static double randomNumber();
 
 	/**
 	 * \brief Return a random float number in [0.0; 1.0]
 	 * \return A random float number in [0.0; 1.0]
 	 */
-	static float randomNumberUnit();
+	static double randomNumberUnit();
 
 	/**
 	 * \brief Generate a random float number in an interval
@@ -32,14 +32,14 @@ public:
 	 * \param b Maximum value
 	 * \return The random float number in the interval [a; b]
 	 */
-	static float randomNumberInterval(float a, float b);
+	static double randomNumberInterval(double a, double b);
 
 	/**
 	 * \brief Generate a random point on a unit hemisphere
 	 * \param normal The direction of the hemisphere
 	 * \return A random point on a unit hemisphere
 	 */
-	static glm::vec3 randomOnUnitHemisphere(const glm::vec3& normal);
+	static Vec3 randomOnUnitHemisphere(const Vec3& normal);
 	
 private:
 	static std::mt19937 m_randomGenerator;

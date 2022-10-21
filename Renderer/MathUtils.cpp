@@ -1,18 +1,19 @@
 #include "MathUtils.h"
 
-glm::vec3 mapPoint(const glm::mat4& transformation, const glm::vec3& point)
+Vec3 mapPoint(const Mat4& transformation, const Vec3& point)
 {
-	const glm::vec4 homogeneousPoint(point, 1.f);
-	const glm::vec4 homogeneousResult = transformation * homogeneousPoint;
+	const Vec4 homogeneousPoint(point, 1.0);
+	const auto homogeneousResult = transformation * homogeneousPoint;
 
-	assert(homogeneousResult.w != 0.f);
+	assert(homogeneousResult.w != 0.0);
 	
-	return glm::vec3(homogeneousResult) / homogeneousResult.w;
+	return Vec3(homogeneousResult) / homogeneousResult.w;
 }
 
-glm::vec3 mapVector(const glm::mat4& transformation, const glm::vec3& vector)
+Vec3 mapVector(const Mat4& transformation, const Vec3& vector)
 {
-	const glm::vec4 homogeneousVector(vector, 0.f);
-	const glm::vec4 homogeneousResult = transformation * homogeneousVector;
-	return glm::vec3(homogeneousResult);
+	const Vec4 homogeneousVector(vector, 0.0);
+	const auto homogeneousResult = transformation * homogeneousVector;
+	// Conversion from Vec4 to Vec3
+	return homogeneousResult;
 }

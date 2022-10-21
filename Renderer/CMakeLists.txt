@@ -28,6 +28,7 @@ set(HEADER_FILES
         Ray.h
         Renderer.h
         Scene.h
+        Types.h
 )
 
 set(SRC_FILES

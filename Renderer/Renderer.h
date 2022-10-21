@@ -10,15 +10,14 @@ class Renderer
 public:
 	explicit Renderer(std::unique_ptr<Scene> scene);
 
-	FloatImage render(int width, int height) const;
+	[[nodiscard]] FloatImage render(int width, int height) const;
 
 private:
-
-	glm::vec3 computeRayColor(const Ray& ray, int depth) const;
+	[[nodiscard]] Vec3 computeRayColor(const Ray& ray, int depth) const;
 
 	const int m_samplesPerPixels = 128;
 	const int m_maxDepth = 32;
-	const float m_minT;
+	const double m_minT;
 	
 	std::mt19937 m_randomGenerator;
 	

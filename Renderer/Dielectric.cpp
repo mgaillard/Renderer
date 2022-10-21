@@ -2,7 +2,7 @@
 
 #include "Random.h"
 
-Dielectric::Dielectric(float refractionIndex) :
+Dielectric::Dielectric(double refractionIndex) :
 	m_refractionIndex(refractionIndex)
 {
 	
@@ -15,13 +15,13 @@ double schlick(double cosine, double refractionIndex)
     return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-bool Dielectric::scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scattered) const
+bool Dielectric::scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered) const
 {
-    attenuation = glm::vec3(1.0, 1.0, 1.0);
+    attenuation = Vec3(1.0, 1.0, 1.0);
 
 	// When hitting the surface from outside to inside
-    glm::vec3 normal = hit.normal;
-    float refractionIndexRatio = 1.f / m_refractionIndex;
+    Vec3 normal = hit.normal;
+    double refractionIndexRatio = 1.0 / m_refractionIndex;
 
 	// When hitting the surface from inside to outside
 	if (!hit.isFrontFace)
@@ -37,7 +37,7 @@ bool Dielectric::scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scat
 
     if (refractionIndexRatio * sinTheta > 1.0)
     {
-        const glm::vec3 reflected = glm::reflect(unitDirection, hit.normal);
+        const auto reflected = glm::reflect(unitDirection, hit.normal);
         scattered = Ray(hit.point, reflected);
         return true;
     }
@@ -45,7 +45,7 @@ bool Dielectric::scatter(const HitRecord& hit, glm::vec3& attenuation, Ray& scat
     const double reflectProb = schlick(cosTheta, refractionIndexRatio);
     if (Random::randomNumberUnit() < reflectProb)
     {
-        const glm::vec3 reflected = glm::reflect(unitDirection, hit.normal);
+        const auto reflected = glm::reflect(unitDirection, hit.normal);
         scattered = Ray(hit.point, reflected);
         return true;
     }

@@ -9,7 +9,7 @@
 #include "MathUtils.h"
 
 Mesh::Mesh() :
-	m_boundingBox({0.f, 0.f, 0.f}, { 0.f, 0.f, 0.f }),
+	m_boundingBox({0.0, 0.0, 0.0}, { 0.0, 0.0, 0.0 }),
 	m_material(nullptr)
 {
 }
@@ -17,7 +17,7 @@ Mesh::Mesh() :
 Mesh::Mesh(std::vector<MeshVertex> vertices, std::vector<MeshFace> faces) :
 	m_vertices(std::move(vertices)),
 	m_faces(std::move(faces)),
-	m_boundingBox({ 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }),
+	m_boundingBox({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }),
 	m_material(nullptr)
 {
 	updateBoundingBox();
@@ -35,7 +35,7 @@ void Mesh::setFaces(std::vector<MeshFace> faces)
 	m_faces = std::move(faces);
 }
 
-void Mesh::applyTransformation(const glm::mat4& transformation)
+void Mesh::applyTransformation(const Mat4& transformation)
 {
 	const auto normalTransformation = glm::inverseTranspose(transformation);
 	
@@ -47,6 +47,16 @@ void Mesh::applyTransformation(const glm::mat4& transformation)
 	}
 
 	updateBoundingBox();
+}
+
+int Mesh::nbVertices() const
+{
+	return static_cast<int>(m_vertices.size());
+}
+
+int Mesh::nbFaces() const
+{
+	return static_cast<int>(m_faces.size());
 }
 
 void Mesh::setMaterial(std::shared_ptr<Material> material)
@@ -74,26 +84,26 @@ const AABB& Mesh::boundingBox() const
 	return m_boundingBox;
 }
 
-glm::vec3 Mesh::vertex(int face, int v) const
+Vec3 Mesh::vertex(int face, int v) const
 {
-	assert(face >= 0 && face < faces.size());
+	assert(face >= 0 && face < nbFaces());
 	assert(v >= 0 && v < 3);
 
 	const auto index = m_faces[face].vertices[v];
 
-	assert(index >= 0 && index < vertices.size());
+	assert(index >= 0 && index < nbVertices());
 	
 	return m_vertices[index].position;
 }
 
-glm::vec3 Mesh::normal(int face, int v) const
+Vec3 Mesh::normal(int face, int v) const
 {
-	assert(face >= 0 && face < faces.size());
+	assert(face >= 0 && face < nbFaces());
 	assert(v >= 0 && v < 3);
 
 	const auto index = m_faces[face].normals[v];
 
-	if (index >= 0 && index < m_vertices.size())
+	if (index >= 0 && index < nbVertices())
 	{
 		// Normal is defined in the mesh
 		return m_vertices[index].normal;
@@ -109,13 +119,13 @@ glm::vec3 Mesh::normal(int face, int v) const
 	}
 }
 
-glm::vec3 Mesh::normal(int face, float u, float v) const
+Vec3 Mesh::normal(int face, double u, double v) const
 {
 	const auto n0 = normal(face, 0);
 	const auto n1 = normal(face, 1);
 	const auto n2 = normal(face, 2);
 
-	const auto normalVector = (1.f - u - v) * n0 + u * n1 + v * n2;
+	const auto normalVector = (1.0 - u - v) * n0 + u * n1 + v * n2;
 
 	return glm::normalize(normalVector);
 }
@@ -124,8 +134,8 @@ void Mesh::updateBoundingBox()
 {
 	if (!m_vertices.empty())
 	{
-		glm::vec3 a = m_vertices.front().position;
-		glm::vec3 b = m_vertices.front().position;
+		Vec3 a = m_vertices.front().position;
+		Vec3 b = m_vertices.front().position;
 
 		for (const auto& v : m_vertices)
 		{
@@ -137,22 +147,28 @@ void Mesh::updateBoundingBox()
 	}
 }
 
-int indexOfNumberLetter(std::string& str, int offset)
+int indexOfNumberLetter(const std::string& str, int offset)
 {
-	for (int i = offset; i < str.length(); ++i)
+	const auto length = static_cast<int>(str.length());
+
+	for (int i = offset; i < length; ++i)
 	{
 		if ((str[i] >= '0' && str[i] <= '9') || str[i] == '-' || str[i] == '.') return i;
 	}
-	return static_cast<int>(str.length());
+
+	return length;
 }
 
-int lastIndexOfNumberLetter(std::string& str)
+int lastIndexOfNumberLetter(const std::string& str)
 {
-	for (int i = str.length() - 1; i >= 0; --i)
+	const auto length = static_cast<int>(str.length());
+
+	for (int i = length - 1; i >= 0; --i)
 	{
 		if ((str[i] >= '0' && str[i] <= '9') || str[i] == '-' || str[i] == '.') return i;
 	}
-	return 0;
+
+	return length;
 }
 
 std::vector<std::string> split(const std::string& s, char delim)
@@ -193,8 +209,8 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 	}
 
 	// Store vertex and normal data while reading
-	std::vector<glm::vec3> raw_vertices;
-	std::vector<glm::vec3> raw_normals;
+	std::vector<Vec3> raw_vertices;
+	std::vector<Vec3> raw_normals;
 	std::vector<int> v_elements;
 	std::vector<int> n_elements;
 
@@ -223,7 +239,7 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 			int index1 = indexOfNumberLetter(line, 2);
 			int index2 = lastIndexOfNumberLetter(line);
 			auto values = split(line.substr(index1, index2 - index1 + 1), ' ');
-			for (int i = 0; i < values.size() - 2; i++)
+			for (int i = 0; i < static_cast<int>(values.size()) - 2; i++)
 			{
 				// Split up vertex indices
 				auto v1 = split(values[0], '/'); // Triangle fan for ngons
@@ -254,8 +270,8 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 
 	for (unsigned int i = 0; i < std::max(raw_vertices.size(), raw_normals.size()); i++)
 	{
-		glm::vec3 vertex;
-		glm::vec3 normal;
+		Vec3 vertex;
+		Vec3 normal;
 
 		if (i < raw_vertices.size())
 		{
@@ -301,7 +317,7 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 bool rayMeshIntersection(
 	const Mesh& mesh,
 	const Ray& ray,
-	float minT,
+	double minT,
 	HitRecord& hit)
 {
 	// First intersect ray with AABB to quickly discard non-intersecting rays
@@ -316,19 +332,19 @@ bool rayMeshIntersection(
 	bool intersectionFound = false;
 	
 	hit.ray = ray;
-	hit.t = std::numeric_limits<float>::max();
+	hit.t = std::numeric_limits<double>::max();
 
 	// Iterate over all triangles in the mesh
-	for (int f = 0; f < mesh.faces().size(); f++)
+	for (int f = 0; f < mesh.nbFaces(); f++)
 	{
 		const auto& v0 = mesh.vertex(f, 0);
 		const auto& v1 = mesh.vertex(f, 1);
 		const auto& v2 = mesh.vertex(f, 2);
 
 		// Distance between origin and hit along the ray
-		float t;
+		double t;
 		// Output barycentric coordinates of the intersection point
-		glm::vec2 baryPosition;
+		Vec2 baryPosition;
 
 		// Check if there is an intersection with this triangle
 		if (glm::intersectRayTriangle(orig, dir, v0, v1, v2, baryPosition, t)
@@ -351,12 +367,12 @@ bool rayMeshIntersection(
 bool rayMeshesIntersection(
 	const std::vector<Mesh>& meshes,
 	const Ray& ray,
-	float minT,
+	double minT,
 	HitRecord& hit)
 {	
 	bool intersectionFound = false;
 
-	hit.t = std::numeric_limits<float>::max();
+	hit.t = std::numeric_limits<double>::max();
 
 	// Iterate over all triangles in the mesh
 	for (unsigned int m = 0; m < meshes.size(); m++)

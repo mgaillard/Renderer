@@ -1,8 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "Ray.h"
+#include "Types.h"
 
 class Camera
 {
@@ -15,11 +14,11 @@ public:
 	 * \param focalLength Focal length of the camera
 	 * \param aspectRatio Aspect ratio of the camera
 	 */
-	Camera(const glm::vec3& eye,
-		   const glm::vec3& at,
-		   const glm::vec3& up,
-		   float focalLength,
-		   float aspectRatio);
+	Camera(const Vec3& eye,
+		   const Vec3& at,
+		   const Vec3& up,
+		   double focalLength,
+		   double aspectRatio);
 
 	/**
 	 * \brief Generate a ray going through this camera
@@ -27,20 +26,20 @@ public:
 	 * \param y Coordinates of the ray on Y in [0; 1]
 	 * \return A ray
 	 */
-	[[nodiscard]] Ray generateRay(float x, float y) const;
+	[[nodiscard]] Ray generateRay(double x, double y) const;
 
 private:
-	glm::vec3 m_eye;
-	glm::vec3 m_at;
-	glm::vec3 m_up;
+	Vec3 m_eye;
+	Vec3 m_at;
+	Vec3 m_up;
 
-	float m_focalLength;
-	float m_aspectRatio;
+	double m_focalLength;
+	double m_aspectRatio;
 
 	// Following are internal members caching vectors for faster ray generation
-	glm::vec3 m_horizontal;
-	glm::vec3 m_vertical;
-	glm::vec3 m_lowerLeftCorner;
+	Vec3 m_horizontal;
+	Vec3 m_vertical;
+	Vec3 m_lowerLeftCorner;
 
 	/**
 	 * \brief Update the horizontal, vertical and lowerLeftCorner vectors.

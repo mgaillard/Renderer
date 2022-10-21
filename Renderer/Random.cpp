@@ -6,28 +6,28 @@
 
 std::mt19937 Random::m_randomGenerator = std::mt19937();
 
-float Random::randomNumber()
+double Random::randomNumber()
 {
-	return randomNumberInterval(-0.5f, 0.5f);
+	return randomNumberInterval(-0.5, 0.5);
 }
 
-float Random::randomNumberUnit()
+double Random::randomNumberUnit()
 {
-	return randomNumberInterval(0.f, 1.f);
+	return randomNumberInterval(0.0, 1.0);
 }
 
-float Random::randomNumberInterval(float a, float b)
+double Random::randomNumberInterval(double a, double b)
 {
-	std::uniform_real_distribution<float> distribution(a, b);
+	std::uniform_real_distribution<double> distribution(a, b);
 	return distribution(m_randomGenerator);
 }
 
-glm::vec3 Random::randomOnUnitHemisphere(const glm::vec3& normal)
+Vec3 Random::randomOnUnitHemisphere(const Vec3& normal)
 {
-	const auto pointOnUnitSphere = glm::sphericalRand(1.f);
+	const auto pointOnUnitSphere = glm::sphericalRand(1.0);
 
 	// If in the same hemisphere as the normal
-	if (glm::dot(pointOnUnitSphere, normal) > 0.f)
+	if (glm::dot(pointOnUnitSphere, normal) > 0.0)
 	{
 		return pointOnUnitSphere;
 	}
