@@ -7,21 +7,25 @@ My own implementation of [Ray Tracing in One Weekend](https://raytracing.github.
 * Works on triangle meshes instead of only spheres
 * Uses glm for 3D math
 
-## Prerequisites
-- Qt 5.12.7 (optional for PNG support)
-
 ## Build on Linux
 ```bash
 $ mkdir build
 $ cd build
 $ cmake -DCMAKE_BUILD_TYPE=Release ..
-$ make
+$ make -j4
+```
+
+## Run on Linux
+```bash
+$ ./Renderer/Renderer
+# To run on a single NUMA node
+$ numactl --cpunodebind=0 --membind=0 Renderer/Renderer
 ```
 
 ## Author
 Mathieu Gaillard
-[HPCG Laboratory](http://hpcg.purdue.edu/)  
-Department of Computer Graphics Technology  
+[CGVLab](https://www.cs.purdue.edu/cgvlab/www/)  
+Department of Computer Science
 Purdue University
 
 ## License
