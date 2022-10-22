@@ -8,11 +8,33 @@
 #include "FloatImage.h"
 
 Renderer::Renderer(std::unique_ptr<Scene> scene, Random::SeedType randomSeed) :
+	m_samplesPerPixels(128),
+	m_maxDepth(32),
 	m_minT(0.0001),
 	m_randomSeed(randomSeed),
 	m_scene(std::move(scene))
 {
 	
+}
+
+int Renderer::samplesPerPixels() const
+{
+	return m_samplesPerPixels;
+}
+
+int Renderer::maxDepth() const
+{
+	return m_maxDepth;
+}
+
+void Renderer::setSamplesPerPixels(int samplesPerPixels)
+{
+	m_samplesPerPixels = samplesPerPixels;
+}
+
+void Renderer::setMaxDepth(int maxDepth)
+{
+	m_maxDepth = maxDepth;
 }
 
 FloatImage Renderer::render(int width, int height) const

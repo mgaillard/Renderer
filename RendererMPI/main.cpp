@@ -9,7 +9,7 @@
 #include "Renderer.h"
 #include "Scene.h"
 
-Renderer setupRenderer(int width, int height, Random::SeedType seed)
+Renderer setupRenderer(int width, int height, int samplesPerPixels, Random::SeedType seed)
 {
     // Setup camera
     constexpr Vec3 eye(0, 10, 25);
@@ -36,8 +36,8 @@ Renderer setupRenderer(int width, int height, Random::SeedType seed)
 
     // Setup scene
     auto scene = std::make_unique<Scene>(std::move(camera), std::move(meshes));
-
     Renderer renderer(std::move(scene), seed);
+    renderer.setSamplesPerPixels(samplesPerPixels);
 
     return renderer;
 }
@@ -70,11 +70,14 @@ int main()
     constexpr int height = 720;
     constexpr int samplesPerPixels = 128;
     // Setup the scene and the renderer (done on each node)
-    const auto renderer = setupRenderer(width, height, nodeSeed);
+    const auto renderer = setupRenderer(width, height, samplesPerPixels, nodeSeed);
+    // Measure rendering time
+    const double start_time = MPI_Wtime();
+    // Run the rendering code
     const auto floatImage = renderer.renderWithoutGammaCorrection(width, height);
-
     // Aggregate the random images with MPI
     auto outputImage = aggregateImagesMPI(floatImage);
+    const double end_time = MPI_Wtime();
 
     // Save the image from the master node
     if (world_rank == 0)
@@ -84,6 +87,9 @@ int main()
         outputImage.applyGammaCorrection();
 
         saveAsPPM(outputImage, "output.ppm");
+
+        std::cout << "Calculated on " << world_size << " nodes in "
+                  << end_time - start_time << " s" << std::endl;
     }
     
     MPI_Finalize();

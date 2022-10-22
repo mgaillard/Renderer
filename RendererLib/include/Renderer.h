@@ -12,6 +12,14 @@ public:
 	explicit Renderer(std::unique_ptr<Scene> scene,
 		              Random::SeedType randomSeed = Random::GeneratorType::default_seed);
 
+	int samplesPerPixels() const;
+
+	int maxDepth() const;
+
+	void setSamplesPerPixels(int samplesPerPixels);
+
+	void setMaxDepth(int maxDepth);
+
 	[[nodiscard]] FloatImage render(int width, int height) const;
 
 	[[nodiscard]] FloatImage renderWithoutGammaCorrection(int width, int height) const;
@@ -19,8 +27,8 @@ public:
 private:
 	[[nodiscard]] Vec3 computeRayColor(const Ray& ray, int depth, Random& randomGenerator) const;
 
-	const int m_samplesPerPixels = 128;
-	const int m_maxDepth = 32;
+	int m_samplesPerPixels;
+	int m_maxDepth;
 	const double m_minT;
 	
 	Random::SeedType m_randomSeed;

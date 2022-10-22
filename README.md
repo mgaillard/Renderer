@@ -20,6 +20,8 @@ $ make -j4
 $ ./Renderer/Renderer
 # To run on a single NUMA node
 $ numactl --cpunodebind=0 --membind=0 Renderer/Renderer
+# To run on a two sockets computer
+$ mpirun -n 2 --map-by socket --mca btl self,vader RendererMPI/RendererMPI
 ```
 
 ## Author
