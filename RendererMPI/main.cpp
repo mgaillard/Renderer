@@ -5,9 +5,8 @@
 #include <glm/gtx/transform.hpp>
 
 #include "ImageConversion.h"
-#include "Lambertian.h"
+#include "ReferenceScene.h"
 #include "Renderer.h"
-#include "Scene.h"
 
 FloatImage aggregateImagesMPI(const FloatImage& images)
 {

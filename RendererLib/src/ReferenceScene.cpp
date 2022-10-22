@@ -119,7 +119,5 @@ std::unique_ptr<Scene> createReferenceScene(int width, int height, const std::fi
     }
 
     // Setup scene
-    auto scene = std::make_unique<Scene>(std::move(camera), std::move(meshes));
-
-    return std::move(scene);
+    return std::make_unique<Scene>(std::move(camera), std::move(meshes));
 }
