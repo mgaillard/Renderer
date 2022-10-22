@@ -12,6 +12,16 @@ public:
 	int width() const { return m_width; }
 	int height() const { return m_height; }
 
+	Vec3* data()
+	{
+		return m_data.data();
+	}
+
+	const Vec3* data() const
+	{
+		return m_data.data();
+	}
+
 	Vec3& at(int row, int col)
 	{
 		assert(row >= 0 && row < m_height);

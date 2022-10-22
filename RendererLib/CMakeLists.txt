@@ -26,6 +26,7 @@ set(HEADER_FILES
         include/Mesh.h
         include/Metal.h
         include/Random.h
+        include/ReferenceScene.h
         include/Ray.h
         include/Renderer.h
         include/Scene.h
@@ -43,6 +44,7 @@ set(SRC_FILES
         src/Mesh.cpp
         src/Metal.cpp
         src/Random.cpp
+        src/ReferenceScene.cpp
         src/Renderer.cpp
         src/Scene.cpp
 )

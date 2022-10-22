@@ -1,11 +1,11 @@
 #pragma once
 
+#include <array>
+#include <filesystem>
 #include <string>
 #include <vector>
-#include <array>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_inverse.hpp>
 
 #include "AABB.h"
 #include "Ray.h"
@@ -117,8 +117,8 @@ private:
 	std::shared_ptr<Material> m_material;
 };
 
-bool loadMesh(const std::string& filename, Mesh& mesh);
-bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, std::vector<MeshFace>& faces);
+bool loadMesh(const std::filesystem::path& filename, Mesh& mesh);
+bool loadMesh(const std::filesystem::path& filename, std::vector<MeshVertex>& vertices, std::vector<MeshFace>& faces);
 
 bool rayMeshIntersection(const Mesh& mesh,
 	                     const Ray& ray,

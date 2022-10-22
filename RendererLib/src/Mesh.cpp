@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <glm/gtx/intersect.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 
 #include "MathUtils.h"
 
@@ -185,7 +186,7 @@ std::vector<std::string> split(const std::string& s, char delim)
 	return elems;
 }
 
-bool loadMesh(const std::string& filename, Mesh& mesh)
+bool loadMesh(const std::filesystem::path& filename, Mesh& mesh)
 {
 	std::vector<MeshVertex> vertices;
 	std::vector<MeshFace> faces;
@@ -198,7 +199,7 @@ bool loadMesh(const std::string& filename, Mesh& mesh)
 	return success;
 }
 
-bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, std::vector<MeshFace>& faces)
+bool loadMesh(const std::filesystem::path& filename, std::vector<MeshVertex>& vertices, std::vector<MeshFace>& faces)
 {
 	std::ifstream file(filename);
 
@@ -247,16 +248,16 @@ bool loadMesh(const std::string& filename, std::vector<MeshVertex>& vertices, st
 				auto v3 = split(values[i + 2], '/');
 
 				// Store position indices
-				v_elements.push_back(stoul(v1[0]) - 1);
-				v_elements.push_back(stoul(v2[0]) - 1);
-				v_elements.push_back(stoul(v3[0]) - 1);
+				v_elements.push_back(std::stoul(v1[0]) - 1);
+				v_elements.push_back(std::stoul(v2[0]) - 1);
+				v_elements.push_back(std::stoul(v3[0]) - 1);
 
 				// Check for normals
 				if (v1.size() >= 3 && v1[2].length() > 0)
 				{
-					n_elements.push_back(stoul(v1[2]) - 1);
-					n_elements.push_back(stoul(v2[2]) - 1);
-					n_elements.push_back(stoul(v3[2]) - 1);
+					n_elements.push_back(std::stoul(v1[2]) - 1);
+					n_elements.push_back(std::stoul(v2[2]) - 1);
+					n_elements.push_back(std::stoul(v3[2]) - 1);
 				}
 			}
 		}
