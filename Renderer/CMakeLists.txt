@@ -13,39 +13,10 @@ else()
     target_compile_options(Renderer PRIVATE -march=native)
 endif()
 
-set(HEADER_FILES
-        AABB.h
-        Camera.h
-        Constants.h
-        Dielectric.h
-        FloatImage.h
-        ImageConversion.h
-        Lambertian.h
-        Material.h
-        MathUtils.h
-        Mesh.h
-        Metal.h
-        Random.h
-        Ray.h
-        Renderer.h
-        Scene.h
-        Types.h
-)
+set(HEADER_FILES )
 
 set(SRC_FILES
         main.cpp
-        AABB.cpp
-        Camera.cpp
-        Dielectric.cpp
-        FloatImage.cpp
-        ImageConversion.cpp
-        Lambertian.cpp
-        MathUtils.cpp
-        Mesh.cpp
-        Metal.cpp
-        Random.cpp
-        Renderer.cpp
-        Scene.cpp
 )
 
 source_group("Header Files" FILES ${HEADER_FILES})
@@ -68,4 +39,5 @@ target_link_libraries(Renderer
     PUBLIC
     glm::glm
     OpenMP::OpenMP_CXX
+    RendererLib
 )

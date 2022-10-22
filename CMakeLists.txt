@@ -14,6 +14,7 @@ list(PREPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 # Dependencies for application
 include(glm)
 
+add_subdirectory(RendererLib)
 add_subdirectory(Renderer)
 
 # Set the project as startup project in Visual Studio
