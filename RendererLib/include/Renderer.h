@@ -14,6 +14,8 @@ public:
 
 	[[nodiscard]] FloatImage render(int width, int height) const;
 
+	[[nodiscard]] FloatImage renderWithoutGammaCorrection(int width, int height) const;
+
 private:
 	[[nodiscard]] Vec3 computeRayColor(const Ray& ray, int depth, Random& randomGenerator) const;
 

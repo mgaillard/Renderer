@@ -17,6 +17,17 @@ Renderer::Renderer(std::unique_ptr<Scene> scene, Random::SeedType randomSeed) :
 
 FloatImage Renderer::render(int width, int height) const
 {
+	auto floatImage = renderWithoutGammaCorrection(width, height);
+
+	// Multi-sampling and Gamma correction, with gamma=2.0
+	floatImage /= static_cast<double>(m_samplesPerPixels);
+	floatImage.applyGammaCorrection();
+
+	return floatImage;
+}
+
+FloatImage Renderer::renderWithoutGammaCorrection(int width, int height) const
+{
 	const auto nbThreads = omp_get_max_threads();
 
 	// Random number generators per thread, for reproducibility
@@ -64,13 +75,7 @@ FloatImage Renderer::render(int width, int height) const
 	}
 
 	// Aggregate the images from each CPU core
-	auto floatImage = FloatImage::aggregateImages(floatImages);
-
-	// Multi-sampling and Gamma correction, with gamma=2.0
-	floatImage /= static_cast<double>(m_samplesPerPixels);
-	floatImage.applyGammaCorrection();
-
-	return floatImage;
+	return FloatImage::aggregateImages(floatImages);
 }
 
 Vec3 Renderer::computeRayColor(const Ray& ray, int depth, Random& randomGenerator) const
