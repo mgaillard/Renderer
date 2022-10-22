@@ -8,8 +8,8 @@ class Dielectric : public Material
 public:
 	explicit Dielectric(double refractionIndex);
 
-	bool scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered) const override;
+	bool scatter(const HitRecord& hit, Random& randomGenerator, Vec3& attenuation, Ray& scattered) const override;
 
 private:
-	float m_refractionIndex;
+	double m_refractionIndex;
 };

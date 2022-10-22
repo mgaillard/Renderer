@@ -8,9 +8,9 @@ Lambertian::Lambertian(const Vec3& albedo) :
 	
 }
 
-bool Lambertian::scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered) const
+bool Lambertian::scatter(const HitRecord& hit, Random& randomGenerator, Vec3& attenuation, Ray& scattered) const
 {
-	const auto scatterDirection = Random::randomOnUnitHemisphere(hit.normal);
+	const auto scatterDirection = randomGenerator.randomOnUnitHemisphere(hit.normal);
 
 	scattered = Ray(hit.point, scatterDirection);
 	

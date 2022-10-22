@@ -16,6 +16,7 @@ endif()
 set(HEADER_FILES
         AABB.h
         Camera.h
+        Constants.h
         Dielectric.h
         FloatImage.h
         ImageConversion.h

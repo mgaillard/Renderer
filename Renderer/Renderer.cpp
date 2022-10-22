@@ -6,19 +6,24 @@
 #include <sstream>
 
 #include "FloatImage.h"
-#include "Random.h"
 
-Renderer::Renderer(std::unique_ptr<Scene> scene) :
+Renderer::Renderer(std::unique_ptr<Scene> scene, Random::SeedType randomSeed) :
 	m_minT(0.0001),
+	m_randomSeed(randomSeed),
 	m_scene(std::move(scene))
 {
 	
 }
 
 FloatImage Renderer::render(int width, int height) const
-{	
-	// 2D array of colors for each thread on the computer
-	std::vector<FloatImage> floatImages(omp_get_max_threads(), FloatImage(width, height));
+{
+	const auto nbThreads = omp_get_max_threads();
+
+	// Random number generators per thread, for reproducibility
+	auto randomGenerators = Random::createMultiple(nbThreads, m_randomSeed);
+
+	// 2D array of colors per thread
+	std::vector<FloatImage> floatImages(nbThreads, FloatImage(width, height));
 
 	long progress = 0;
 	const long totalProgress = m_samplesPerPixels;
@@ -26,21 +31,24 @@ FloatImage Renderer::render(int width, int height) const
 #pragma omp parallel for
 	for (int s = 0; s < m_samplesPerPixels; s++)
 	{
+		const auto currentThread = omp_get_thread_num();
+
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
-				// Compute normalized coordinates, y is reversed in the image
-				const auto x = (static_cast<double>(j) + Random::randomNumber()) / (width - 1);
-				const auto y = (static_cast<double>(height - 1 - i) + Random::randomNumber()) / (height - 1);
+				auto& randomGenerator = randomGenerators[currentThread];
+
+				// Compute normalized coordinates (randomized), y is reversed in the image
+				const auto x = (static_cast<double>(j) + randomGenerator.randomNumber()) / (width - 1);
+				const auto y = (static_cast<double>(height - 1 - i) + randomGenerator.randomNumber()) / (height - 1);
 
 				// Generate a ray from the camera
 				const auto ray = m_scene->camera()->generateRay(x, y);
 
 				// Add colors for each sample per pixel
-				const auto rayColor = computeRayColor(ray, m_maxDepth);
+				const auto rayColor = computeRayColor(ray, m_maxDepth, randomGenerator);
 
-				const auto currentThread = omp_get_thread_num();
 				floatImages[currentThread].at(i, j) += rayColor;
 			}
 		}
@@ -65,7 +73,7 @@ FloatImage Renderer::render(int width, int height) const
 	return floatImage;
 }
 
-Vec3 Renderer::computeRayColor(const Ray& ray, int depth) const
+Vec3 Renderer::computeRayColor(const Ray& ray, int depth, Random& randomGenerator) const
 {	
 	Vec3 color(0.0, 0.0, 0.0);
 
@@ -79,9 +87,9 @@ Vec3 Renderer::computeRayColor(const Ray& ray, int depth) const
 			Vec3 attenuation;
 			Ray scatteredRay;
 			
-			if (hit.material->scatter(hit, attenuation, scatteredRay))
+			if (hit.material->scatter(hit, randomGenerator, attenuation, scatteredRay))
 			{
-				return attenuation * computeRayColor(scatteredRay, depth - 1);
+				return attenuation * computeRayColor(scatteredRay, depth - 1, randomGenerator);
 			}
 		}
 		else

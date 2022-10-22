@@ -15,7 +15,7 @@ double schlick(double cosine, double refractionIndex)
     return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-bool Dielectric::scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered) const
+bool Dielectric::scatter(const HitRecord& hit, Random& randomGenerator, Vec3& attenuation, Ray& scattered) const
 {
     attenuation = Vec3(1.0, 1.0, 1.0);
 
@@ -43,7 +43,7 @@ bool Dielectric::scatter(const HitRecord& hit, Vec3& attenuation, Ray& scattered
     }
 
     const double reflectProb = schlick(cosTheta, refractionIndexRatio);
-    if (Random::randomNumberUnit() < reflectProb)
+    if (randomGenerator.randomNumberUnit() < reflectProb)
     {
         const auto reflected = glm::reflect(unitDirection, hit.normal);
         scattered = Ray(hit.point, reflected);

@@ -12,20 +12,22 @@
 #include "Scene.h"
 #include "Types.h"
 
-void addRandomSphereWithoutCollisions(std::vector<Mesh>& meshes)
+void addRandomSphereWithoutCollisions(Random& randomGenerator, std::vector<Mesh>& meshes)
 {
+    
+
     // Random position over the floor
     const Vec3 position(
-		Random::randomNumberInterval(-18.0, 18.0),
+        randomGenerator.randomNumberInterval(-18.0, 18.0),
         1.0,
-        Random::randomNumberInterval(-18.0, 18.0)
+        randomGenerator.randomNumberInterval(-18.0, 18.0)
     );
 
 	// Random color
     const Vec3 color(
-        Random::randomNumberUnit(),
-        Random::randomNumberUnit(),
-        Random::randomNumberUnit()
+        randomGenerator.randomNumberUnit(),
+        randomGenerator.randomNumberUnit(),
+        randomGenerator.randomNumberUnit()
     );
 
     bool discard = false;
@@ -117,9 +119,10 @@ int main(int argc, char *argv[])
     cow.setMaterial(glass);
     meshes.push_back(cow);
 
+    Random randomSphereGenerator;
 	for (int i = 0; i < 50; i++)
 	{
-        addRandomSphereWithoutCollisions(meshes);
+        addRandomSphereWithoutCollisions(randomSphereGenerator, meshes);
 	}
 
 	// Setup scene
