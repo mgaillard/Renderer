@@ -33,9 +33,10 @@ int main()
     const auto nodeSeed = 449251 * seed + 26722 * static_cast<Random::SeedType>(world_rank);
 
     // Setup the scene and the renderer (done on each node)
-    constexpr int width = 1280;
-    constexpr int height = 720;
-    constexpr int samplesPerPixels = 128;
+    constexpr int width = 1280 / 4;
+    constexpr int height = 720 / 4;
+    constexpr int totalSamplesPerPixels = 128;
+    const int samplesPerPixels = 128 / world_size;
     auto scene = createReferenceScene(width, height, "../models/");
     Renderer renderer(std::move(scene), nodeSeed);
     renderer.setSamplesPerPixels(samplesPerPixels);
@@ -52,7 +53,7 @@ int main()
     if (world_rank == 0)
     {
         // Multi-sampling and Gamma correction, with gamma=2.0
-        outputImage /= static_cast<double>(world_size * samplesPerPixels);
+        outputImage /= static_cast<double>(totalSamplesPerPixels);
         outputImage.applyGammaCorrection();
 
         saveAsPPM(outputImage, "output.ppm");
