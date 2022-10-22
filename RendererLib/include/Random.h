@@ -60,7 +60,7 @@ public:
      * \param startingSeed The starting seed, that will be the seed of the first generator
      * \return An array of random generators
      */
-    static [[nodiscard]] std::vector<Random> createMultiple(int n, SeedType startingSeed);
+    [[nodiscard]] static std::vector<Random> createMultiple(int n, SeedType startingSeed);
     
 private:
     GeneratorType m_randomGenerator;

@@ -56,7 +56,7 @@ void addRandomSphereWithoutCollisions(Random& randomGenerator, std::vector<Mesh>
 	}
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     constexpr int width = 1280 / 4;
     constexpr int height = 720 / 4;
