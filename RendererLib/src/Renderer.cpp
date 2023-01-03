@@ -58,10 +58,11 @@ FloatImage Renderer::renderWithoutGammaCorrection(int width, int height) const
 	// 2D array of colors per thread
 	std::vector<FloatImage> floatImages(nbThreads, FloatImage(width, height));
 
+	// The progress is the number of horizontal scan lines times the number of samples
+	const long totalProgress = m_samplesPerPixels * height;
 	long progress = 0;
-	const long totalProgress = m_samplesPerPixels;
 
-#pragma omp parallel for
+	#pragma omp parallel for
 	for (int s = 0; s < m_samplesPerPixels; s++)
 	{
 		const auto currentThread = omp_get_thread_num();
@@ -84,16 +85,21 @@ FloatImage Renderer::renderWithoutGammaCorrection(int width, int height) const
 
 				floatImages[currentThread].at(i, j) += rayColor;
 			}
+
+			// Update progress after each full line
+			#pragma omp atomic
+			progress++;
+
+			// The main thread is responsible for displaying the progress
+			if (currentThread == 0)
+			{
+				// TODO: display the progress each second, and the ETA
+				// Use string stream to prevent some of the concurrency issues when displaying
+				std::stringstream progressStream;
+				progressStream << "Progress: " << static_cast<double>(progress) / static_cast<double>(totalProgress) << std::endl;
+				std::cout << progressStream.str();
+			}
 		}
-
-		// Show progress after each full image
-#pragma omp atomic
-		progress++;
-
-		// Use string stream to prevent some of the concurrency issues when displaying
-		std::stringstream progressStream;
-		progressStream << "Progress: " << static_cast<double>(progress) / static_cast<double>(totalProgress) << std::endl;
-		std::cout << progressStream.str();
 	}
 
 	// Aggregate the images from each CPU core
