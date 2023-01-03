@@ -13,7 +13,7 @@ AABB::AABB(const Vec3& a, const Vec3& b) :
 
 }
 
-bool rayAABBIntersection(const AABB& box, const Ray& ray)
+bool rayAABBIntersection(const AABB& box, const Ray& ray, double& t)
 {
     // Source: https://www.scratchapixel.com
     //         A Minimal Ray-Tracer: Rendering Simple Shapes (Sphere, Cube, Disk, Plane, etc.)
@@ -49,7 +49,7 @@ bool rayAABBIntersection(const AABB& box, const Ray& ray)
 
     if (tymax < txmax)
         txmax = tymax;
-    
+
     if (invDirection.z >= 0.0)
     {
         tzmin = (box.minZ() - ray.origin().z) * invDirection.z;
@@ -69,5 +69,21 @@ bool rayAABBIntersection(const AABB& box, const Ray& ray)
     if (tzmax < txmax)
         txmax = tzmax;
 
+    t = txmin;
+    if (t < 0)
+    {
+        t = txmax;
+        if (t < 0)
+        {
+            return false;
+        }
+    }
+
     return true;
+}
+
+bool rayAABBIntersection(const AABB& box, const Ray& ray)
+{
+    double t;
+    return rayAABBIntersection(box, ray, t);
 }

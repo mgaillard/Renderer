@@ -95,4 +95,19 @@ private:
     Vec3 m_end;
 };
 
+/**
+ * \brief Ray AABB box intersection
+ * \param box The AABB box
+ * \param ray The Ray
+ * \param t Time on the ray of the first hit
+ * \return True if the ray intersects the AABB
+ */
+bool rayAABBIntersection(const AABB& box, const Ray& ray, double& t);
+
+/**
+ * \brief Ray AABB box intersection
+ * \param box The AABB box
+ * \param ray The Ray
+ * \return True if the ray intersects the AABB
+ */
 bool rayAABBIntersection(const AABB& box, const Ray& ray);
